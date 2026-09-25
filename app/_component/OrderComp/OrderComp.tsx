@@ -14,6 +14,7 @@ import {
   Receipt,
   Eye,
   Lock,
+  PackageOpen,
 } from "lucide-react";
 
 interface OrderItem {
@@ -120,7 +121,7 @@ const OrderCard = ({ order }: { order: Order }) => {
           </div>
         </div>
 
-        {/* الأزرار اليمين (تم تكبيرهم ووضوح الخط) */}
+        {/* الأزرار اليمين */}
         <div className="flex md:flex-col justify-between items-end w-full md:w-auto h-full gap-3.5">
           <button className="w-11 h-11 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-2xl text-gray-700 transition-colors">
             <Eye size={20} />
@@ -242,7 +243,7 @@ export default function OrderComp() {
       return res.json();
     },
     staleTime: 1000 * 60 * 5,
-  refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
   });
 
   const ordersList = Array.isArray(orderResponse)
@@ -277,21 +278,43 @@ export default function OrderComp() {
             </div>
           </div>
 
-          <a
+          <Link
             href="/shop"
             className="hidden sm:flex items-center gap-2 text-[#0aad51] hover:text-green-700 font-semibold text-xs md:text-sm transition-colors"
           >
             <Lock size={15} />
             Continue Shopping
-          </a>
+          </Link>
         </div>
 
-        {/* Orders List */}
-        <div>
-          {ordersList.map((order: Order) => (
-            <OrderCard key={order._id || order.id} order={order} />
-          ))}
-        </div>
+        {/* Orders List / Empty State */}
+        {ordersList.length > 0 ? (
+          <div>
+            {ordersList.map((order: Order) => (
+              <OrderCard key={order._id || order.id} order={order} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-24 h-24 bg-gray-100/80 rounded-3xl flex items-center justify-center mb-6">
+              <PackageOpen size={48} className="text-gray-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              No orders yet
+            </h2>
+            <p className="text-sm font-medium text-gray-500 max-w-sm mb-8">
+              When you place orders, they&apos;ll appear here so you can track
+              them.
+            </p>
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2.5 bg-[#0aad51] hover:bg-green-700 text-white font-bold px-8 py-3.5 rounded-2xl transition-all shadow-lg shadow-green-200/60"
+            >
+              <ShoppingBag size={18} />
+              Start Shopping
+            </Link>
+          </div>
+        )}
 
         <div className="mt-12">
           <TrustBadges />
